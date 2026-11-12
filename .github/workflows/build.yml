@@ -1,0 +1,34 @@
+name: Build Flutter APK
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.19.0' # আপনার লোকাল ভার্সনের সাথে মিলিয়ে নিন
+        channel: 'stable'
+
+    - name: Generate Android folders
+      run: flutter create . --platforms=android
+
+    - name: Get dependencies
+      run: flutter pub get
+
+    - name: Build APK
+      run: flutter build apk --release
