@@ -8,8 +8,11 @@ class AppConstants {
 
   static const String awsRegion = 'ap-south-1';
 
-  static const String userPoolId = 'ap-south-1_Lo0axxmGr';
+  static const String userPoolId = 'ap-south-1_LoOaxxmGr';
   static const String userPoolClientId = '5oorddaf5f8sbk3ajdhf02ajgp';
+
+  static const String webSocketUrl =
+      'wss://7ij1flolu8.execute-api.ap-south-1.amazonaws.com/Prod';
 
   static const String appName = 'Backstage Manager';
 }

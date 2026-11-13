@@ -86,31 +86,31 @@ class AuthNotifier extends Notifier<AuthState> {
     try {
       final session = await user.authenticateUser(details);
       if (session == null || !session.isValid()) {
-        return 'লগইন ব্যর্থ হয়েছে। আবার চেষ্টা করুন।';
+        return 'Login failed. Please try again.';
       }
       state = AuthState(status: AuthStatus.authenticated, email: cleanEmail);
       return null;
     } on CognitoUserNewPasswordRequiredException {
-      return 'নতুন পাসওয়ার্ড সেট করা প্রয়োজন। (Cognito Console থেকে পাসওয়ার্ড সেট করুন)';
+      return 'A new password is required. Set one from the Cognito Console.';
     } on CognitoUserMfaRequiredException {
-      return 'এই অ্যাকাউন্টে MFA চালু আছে, যা এখনো সাপোর্টেড নয়।';
+      return 'MFA is enabled on this account, which is not supported yet.';
     } on CognitoUserConfirmationNecessaryException {
-      return 'অ্যাকাউন্ট এখনো কনফার্ম করা হয়নি।';
+      return 'Account is not confirmed yet.';
     } on CognitoClientException catch (e) {
       switch (e.code) {
         case 'NotAuthorizedException':
-          return 'ইমেইল বা পাসওয়ার্ড ভুল।';
+          return 'Incorrect email or password.';
         case 'UserNotFoundException':
-          return 'এই ইমেইলে কোনো অ্যাকাউন্ট পাওয়া যায়নি।';
+          return 'No account found for this email.';
         case 'UserNotConfirmedException':
-          return 'অ্যাকাউন্ট এখনো কনফার্ম করা হয়নি।';
+          return 'Account is not confirmed yet.';
         case 'NetworkError':
-          return 'ইন্টারনেট সংযোগ চেক করুন।';
+          return 'Please check your internet connection.';
         default:
-          return e.message ?? 'লগইনে সমস্যা হয়েছে (${e.code})';
+          return e.message ?? 'Login problem (${e.code})';
       }
     } catch (e) {
-      return 'অপ্রত্যাশিত সমস্যা: $e';
+      return 'Unexpected problem: $e';
     }
   }
 
@@ -226,16 +226,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       autofillHints: const [AutofillHints.email],
                       enabled: !_loading,
                       decoration: const InputDecoration(
-                        labelText: 'ইমেইল',
+                        labelText: 'Email',
                         prefixIcon: Icon(Icons.email_outlined),
                         border: OutlineInputBorder(),
                       ),
                       validator: (v) {
                         final s = v?.trim() ?? '';
-                        if (s.isEmpty) return 'ইমেইল দিন';
-                        if (!s.contains('@') || !s.contains('.')) {
-                          return 'সঠিক ইমেইল দিন';
-                        }
+                        if (s.isEmpty) return 'Please enter your email';
+                        
                         return null;
                       },
                     ),
@@ -248,7 +246,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       enabled: !_loading,
                       onFieldSubmitted: (_) => _submit(),
                       decoration: InputDecoration(
-                        labelText: 'পাসওয়ার্ড',
+                        labelText: 'Password',
                         prefixIcon: const Icon(Icons.lock_outline),
                         border: const OutlineInputBorder(),
                         suffixIcon: IconButton(
@@ -260,7 +258,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                       ),
                       validator: (v) =>
-                          (v == null || v.isEmpty) ? 'পাসওয়ার্ড দিন' : null,
+                          (v == null || v.isEmpty) ? 'Please enter your password' : null,
                     ),
                     if (_error != null) ...[
                       const SizedBox(height: 16),
@@ -297,7 +295,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 child:
                                     CircularProgressIndicator(strokeWidth: 2.5),
                               )
-                            : const Text('লগইন',
+                            : const Text('Login',
                                 style: TextStyle(fontSize: 16)),
                       ),
                     ),

@@ -1,9 +1,12 @@
+import 'features/home/home_screen.dart';
+import 'features/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'core/constants.dart';
 import 'features/auth/login_screen.dart';
+import 'features/home/home_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -83,7 +86,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.home,
-        builder: (_, __) => const _HomePlaceholder(),
+        builder: (_, __) => const HomeScreen(),
       ),
       // TODO (next phases): dashboard, orders, menu, etc.
     ],
@@ -120,33 +123,4 @@ class _SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) =>
       const Scaffold(body: Center(child: CircularProgressIndicator()));
-}
-
-class _HomePlaceholder extends ConsumerWidget {
-  const _HomePlaceholder();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final email = ref.watch(authProvider).email;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(AppConstants.appName),
-        actions: [
-          IconButton(
-            tooltip: 'লগআউট',
-            icon: const Icon(Icons.logout),
-            onPressed: () => ref.read(authProvider.notifier).logout(),
-          ),
-        ],
-      ),
-      body: Center(
-        child: Text(
-          'লগইন সফল ✅\n${email ?? ''}',
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-      ),
-    );
-  }
 }
